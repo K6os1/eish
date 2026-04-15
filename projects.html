@@ -1,30 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find a Dealer</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial;
+}
+
+body {
+    background: #f5f5f5;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 40px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-links a {
+    text-decoration: none;
+    margin: 5px;
+    padding: 10px 15px;
+    background: #005bac;
+    color: white;
+    border-radius: 5px;
+}
+
+/* CONTAINER */
+.container {
+    width: 90%;
+    margin: auto;
+}
+
+/* SEARCH */
+.search-box {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.search-box input {
+    padding: 10px;
+    width: 250px;
+}
+
+.search-box button {
+    padding: 10px;
+    background: #005bac;
+    color: white;
+    border: none;
+}
+
+/* FILTERS */
+.filters button {
+    padding: 8px 15px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.active {
+    background: #005bac;
+    color: white;
+}
+
+/* GRID */
+.grid {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.map {
+    width: 40%;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border: 1px solid #ddd;
+    width: 200px;
+}
+
+.card img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
+
+.card button {
+    margin-top: 10px;
+    padding: 8px;
+    width: 100%;
+    background: #005bac;
+    color: white;
+    border: none;
+}
+
+/* BUTTON CENTER */
+.center-btn {
+    text-align: center;
+    margin: 30px;
+}
+</style>
+</head>
+
 <body>
-  <head>
 
- <link rel="stylesheet" href="style.css">
+<!-- NAVBAR (ON ALL PAGES) -->
+<div class="navbar">
+    <h2>AUDI</h2>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="models.html">Models</a>
+        <a href="dealer.html">Find a Dealer</a>
+        <a href="about.html">About</a>
+        <a href="build.html">Build & Price</a>
+    </div>
+</div>
 
-    
- </head>
-  <header>
-    <h1>My Personal Website</h1>
-    <p>Welcome to my professional webpage</p>
-  </header>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="projects.html">Projects</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="blog.html">Blog</a>
-    <a href="contact.html">Contact</a>
-  </nav>
-  <main>
-    <section>
-      <h2>Page Title</h2>
-      <p>Your content goes here...</p>
-    </section>
-  </main>
-  <footer>
-    <p>&copy; 2026 Your Name. All Rights Reserved.</p>
-  </footer>
+<div class="container">
+
+    <h1>Find Your Nearest Audi Dealer</h1>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+        <input type="text" id="locationInput" placeholder="Enter location">
+        <button onclick="findDealers()">Find Dealers</button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+        <button class="active" onclick="filterDealers('all', this)">All</button>
+        <button onclick="filterDealers('sales', this)">Sales</button>
+        <button onclick="filterDealers('service', this)">Service</button>
+        <button onclick="resetFilters()">Reset</button>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid">
+
+        <!-- MAP -->
+        <div class="map">
+            <iframe 
+                id="mapFrame"
+                src="https://www.google.com/maps?q=Gaborone,Botswana&output=embed"
+                width="100%" 
+                height="300" 
+                style="border:0;">
+            </iframe>
+        </div>
+
+        <!-- DEALERS -->
+        <div id="dealerList" style="display:flex; gap:20px;">
+
+            <div class="card" data-type="sales">
+                <img src="images/dealer1.jpg">
+                <h3>Dealer One</h3>
+                <p>Gaborone</p>
+                <button onclick="viewDealer('Dealer One')">View</button>
+            </div>
+
+            <div class="card" data-type="service">
+                <img src="images/dealer2.jpg">
+                <h3>Dealer Two</h3>
+                <p>Francistown</p>
+                <button onclick="viewDealer('Dealer Two')">View</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BUTTON -->
+    <div class="center-btn">
+        <button onclick="goToModels()">View All Models</button>
+    </div>
+
+</div>
+
+<script>
+
+/* SEARCH + MAP UPDATE */
+function findDealers() {
+    let location = document.getElementById("locationInput").value;
+
+    if(location === "") {
+        alert("Enter a location");
+        return;
+    }
+
+    document.getElementById("mapFrame").src =
+        "https://www.google.com/maps?q=" + location + "&output=embed";
+}
+
+/* FILTER */
+function filterDealers(type, btn) {
+    let cards = document.querySelectorAll(".card");
+
+    cards.forEach(card => {
+        card.style.display =
+            (type === "all" || card.dataset.type === type) ? "block" : "none";
+    });
+
+    document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+}
+
+/* RESET */
+function resetFilters() {
+    document.querySelectorAll(".card").forEach(card => card.style.display = "block");
+}
+
+/* VIEW DEALER */
+function viewDealer(name) {
+    alert("Opening " + name);
+}
+
+/* NAVIGATION */
+function goToModels() {
+    window.location.href = "models.html";
+}
+
+</script>
 
 </body>
+</html>
